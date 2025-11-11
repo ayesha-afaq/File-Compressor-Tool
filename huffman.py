@@ -96,6 +96,63 @@ class HuffmanCompressor:
             encoded_text = padded_encoded_text
         
         return encoded_text
+    def compress(self, input_path, output_path):
+        """Main compression function - works with text-based file types"""
+        print(f"Compressing {input_path}...")
+        
+        # Check if file type is supported
+        allowed_extensions = ['.txt', '.csv', '.json', '.docx', '.doc', '.xlsx', '.xls']
+        file_extension = os.path.splitext(input_path)[1].lower()
+        
+        if file_extension not in allowed_extensions:
+            print(f"Error: File type {file_extension} is not supported!")
+            print(f"Supported types: {', '.join(allowed_extensions)}")
+            return False
+        
+        # Read input file as binary
+        with open(input_path, 'rb') as file:
+            data = file.read()
+        
+        if not data:
+            print("File is empty!")
+            return False
+        
+        # Store original file extension for decompression
+        file_extension = os.path.splitext(input_path)[1]
+        
+        # Build Huffman tree and codes
+        frequency = self.build_frequency_dict(data)
+        heap = self.build_heap(frequency)
+        root = self.build_huffman_tree(heap)
+        self.build_codes(root)
+        
+        # Encode data
+        encoded_text = self.get_encoded_data(data)
+        padded_encoded_text = self.pad_encoded_text(encoded_text)
+        byte_array = self.get_byte_array(padded_encoded_text)
+        
+        # Write compressed file with optimized storage
+        with open(output_path, 'wb') as output:
+            # Store file metadata
+            metadata = {
+                'extension': file_extension,
+                'mapping': self.reverse_mapping
+            }
+            pickle.dump(metadata, output, protocol=pickle.HIGHEST_PROTOCOL)
+            output.write(bytes(byte_array))
+        
+        # Calculate compression ratio
+        original_size = os.path.getsize(input_path)
+        compressed_size = os.path.getsize(output_path)
+        ratio = (1 - compressed_size/original_size) * 100
+        
+        print(f"Compression completed!")
+        print(f"Original size: {original_size} bytes")
+        print(f"Compressed size: {compressed_size} bytes")
+        print(f"Compression ratio: {ratio:.2f}%")
+        
+        return True
+    
         
     def decode_data(self, encoded_text):
         """Decode binary string to original bytes"""
