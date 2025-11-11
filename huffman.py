@@ -96,3 +96,18 @@ class HuffmanCompressor:
             encoded_text = padded_encoded_text
         
         return encoded_text
+        
+    def decode_data(self, encoded_text):
+        """Decode binary string to original bytes"""
+        current_code = ""
+        decoded_data = bytearray()
+        
+        for bit in encoded_text:
+            current_code += bit
+            if current_code in self.reverse_mapping:
+                byte_val = self.reverse_mapping[current_code]
+                decoded_data.append(byte_val)
+                current_code = ""
+        
+        return bytes(decoded_data)
+    
