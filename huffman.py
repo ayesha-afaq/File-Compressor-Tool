@@ -83,19 +83,8 @@ class HuffmanCompressor:
             byte_segment = padded_encoded_text[i:i+8]
             b.append(int(byte_segment, 2))
         return b
-    def remove_padding(self, padded_encoded_text):
-        """Remove padding from encoded text"""
-        # Read 3 bits for padding info
-        padded_info = padded_encoded_text[:8]
-        extra_padding = int(padded_info, 2)
-        
-        padded_encoded_text = padded_encoded_text[8:]
-        if extra_padding > 0:
-            encoded_text = padded_encoded_text[:-extra_padding]
-        else:
-            encoded_text = padded_encoded_text
-        
-        return encoded_text
+    
+    
     def compress(self, input_path, output_path):
         """Main compression function - works with text-based file types"""
         print(f"Compressing {input_path}...")
@@ -154,6 +143,19 @@ class HuffmanCompressor:
         return True
     
         
+    def remove_padding(self, padded_encoded_text):
+        """Remove padding from encoded text"""
+        # Read 3 bits for padding info
+        padded_info = padded_encoded_text[:8]
+        extra_padding = int(padded_info, 2)
+        
+        padded_encoded_text = padded_encoded_text[8:]
+        if extra_padding > 0:
+            encoded_text = padded_encoded_text[:-extra_padding]
+        else:
+            encoded_text = padded_encoded_text
+        
+        return encoded_text
     def decode_data(self, encoded_text):
         """Decode binary string to original bytes"""
         current_code = ""
@@ -168,3 +170,57 @@ class HuffmanCompressor:
         
         return bytes(decoded_data)
     
+    def decode_data(self, encoded_text):
+        """Decode binary string to original bytes"""
+        current_code = ""
+        decoded_data = bytearray()
+        
+        for bit in encoded_text:
+            current_code += bit
+            if current_code in self.reverse_mapping:
+                byte_val = self.reverse_mapping[current_code]
+                decoded_data.append(byte_val)
+                current_code = ""
+        
+        return bytes(decoded_data)
+    
+    def decompress(self, input_path, output_path):
+        """Main decompression function - restores original file type"""
+        print(f"Decompressing {input_path}...")
+        
+        with open(input_path, 'rb') as file:
+            # Load metadata
+            metadata = pickle.load(file)
+            self.reverse_mapping = metadata['mapping']
+            original_extension = metadata['extension']
+            
+            # Read compressed data
+            bit_string = ""
+            byte = file.read(1)
+            while byte:
+                byte_val = byte[0]  # ✅ Correct way to get integer value of byte
+                bits = bin(byte_val)[2:].rjust(8, '0')
+                bit_string += bits
+                byte = file.read(1)
+
+        
+        # Decode data
+        encoded_text = self.remove_padding(bit_string)
+        decompressed_data = self.decode_data(encoded_text)
+        
+        # If output path doesn't have extension, add the original one
+        output_base, output_ext = os.path.splitext(output_path)
+        if not output_ext and original_extension:
+            output_path = output_base + original_extension
+        elif output_ext and original_extension and output_ext.lower() != original_extension.lower():
+            # If user specified different extension, warn but use original
+            print(f"Note: Using original extension {original_extension} instead of {output_ext}")
+            output_path = output_base + original_extension
+        
+        # Write decompressed file as binary
+        with open(output_path, 'wb') as output:
+            output.write(decompressed_data)
+        
+        print(f"Decompression completed!")
+        print(f"File saved as: {output_path}")
+        return True
