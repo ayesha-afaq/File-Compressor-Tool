@@ -144,3 +144,65 @@ class HuffmanGUI:
         if filename:
             self.decompress_output_entry.delete(0, tk.END)
             self.decompress_output_entry.insert(0, filename)
+
+    def log_status(self, message):
+        """Add message to status text area"""
+        self.status_text.configure(state=tk.NORMAL)
+        self.status_text.insert(tk.END, message + "\n")
+        self.status_text.see(tk.END)
+        self.status_text.configure(state=tk.DISABLED)
+        self.root.update()
+    
+    def compress_file(self):
+        input_file = self.compress_input_entry.get()
+        output_file = self.compress_output_entry.get()
+
+        if not input_file or not output_file:
+            messagebox.showerror("Error", "Please select both input and output files")
+            return
+
+        if not os.path.exists(input_file):
+            messagebox.showerror("Error", "Input file does not exist")
+            return
+
+        try:
+            # ✅ Always use a fresh compressor instance
+            compressor = HuffmanCompressor()
+
+            # Log info
+            file_size = os.path.getsize(input_file)
+            file_ext = os.path.splitext(input_file)[1].upper()
+
+            allowed_extensions = ['.TXT', '.CSV', '.JSON', '.DOCX', '.DOC', '.XLSX', '.XLS']
+            if file_ext not in allowed_extensions:
+                messagebox.showerror(
+                    "Error",
+                    f"File type {file_ext} is not supported!\n\n"
+                    f"Supported types: TXT, CSV, JSON, DOCX, DOC, XLSX, XLS"
+                )
+                self.log_status(f"✗ Error: Unsupported file type {file_ext}")
+                return
+
+            self.log_status(f"Starting compression...")
+            self.log_status(f"File: {os.path.basename(input_file)} ({file_ext})")
+            self.log_status(f"Size: {file_size:,} bytes")
+            self.log_status("-" * 50)
+
+            success = compressor.compress(input_file, output_file)
+
+            if success:
+                compressed_size = os.path.getsize(output_file)
+                ratio = (1 - compressed_size / file_size) * 100
+                self.log_status(f"✓ Compression successful!")
+                self.log_status(f"Compressed size: {compressed_size:,} bytes")
+                self.log_status(f"Space saved: {ratio:.2f}%")
+                self.log_status("=" * 50)
+                messagebox.showinfo(
+                    "Success",
+                    f"File compressed successfully!\nCompression ratio: {ratio:.2f}%"
+                )
+            else:
+                self.log_status("✗ Compression failed!")
+        except Exception as e:
+            self.log_status(f"✗ Error during compression: {str(e)}")
+            messagebox.showerror("Error", f"Compression failed: {str(e)}")
