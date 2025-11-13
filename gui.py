@@ -206,3 +206,179 @@ class HuffmanGUI:
         except Exception as e:
             self.log_status(f"✗ Error during compression: {str(e)}")
             messagebox.showerror("Error", f"Compression failed: {str(e)}")
+
+   def decompress_file(self):
+        input_file = self.decompress_input_entry.get()
+        output_file = self.decompress_output_entry.get()
+
+        if not input_file or not output_file:
+            messagebox.showerror("Error", "Please select both input and output files")
+            return
+
+        if not os.path.exists(input_file):
+            messagebox.showerror("Error", "Input file does not exist")
+            return
+
+        try:
+            # ✅ Always use a fresh compressor instance
+            compressor = HuffmanCompressor()
+
+            self.log_status(f"Starting decompression...")
+            self.log_status(f"File: {os.path.basename(input_file)}")
+            self.log_status("-" * 50)
+
+            # Run decompression
+            success = compressor.decompress(input_file, output_file)
+
+            if success:
+                # The decompressor might change or append the extension automatically
+                actual_output = output_file
+                if not os.path.exists(actual_output):
+                    # Try with added original extension
+                    base, ext = os.path.splitext(output_file)
+                    for f in os.listdir(os.path.dirname(output_file) or '.'):
+                        if os.path.splitext(f)[0] == os.path.basename(base):
+                            actual_output = os.path.join(os.path.dirname(output_file), f)
+                            break
+
+                if os.path.exists(actual_output):
+                    decompressed_size = os.path.getsize(actual_output)
+                    self.log_status(f"✓ Decompression successful!")
+                    self.log_status(f"Output: {os.path.basename(actual_output)}")
+                    self.log_status(f"Size: {decompressed_size:,} bytes")
+                    self.log_status(f"Location: {actual_output}")
+                    self.log_status("=" * 50)
+                    messagebox.showinfo(
+                        "Success",
+                        f"File decompressed successfully!\n\nSaved as:\n"
+                        f"{os.path.basename(actual_output)}\n\nLocation:\n{actual_output}"
+                    )
+                else:
+                    self.log_status(f"✓ Decompression completed!")
+                    self.log_status("=" * 50)
+                    messagebox.showinfo("Success", "File decompressed successfully!")
+            else:
+                self.log_status("✗ Decompression failed!")
+        except Exception as e:
+            self.log_status(f"✗ Error during decompression: {str(e)}")
+            messagebox.showerror("Error", f"Decompression failed:\n{str(e)}")
+
+def decompress_file(self):
+        input_file = self.decompress_input_entry.get()
+        output_file = self.decompress_output_entry.get()
+
+        if not input_file or not output_file:
+            messagebox.showerror("Error", "Please select both input and output files")
+            return
+
+        if not os.path.exists(input_file):
+            messagebox.showerror("Error", "Input file does not exist")
+            return
+
+        try:
+            # ✅ Always use a fresh compressor instance
+            compressor = HuffmanCompressor()
+
+            self.log_status(f"Starting decompression...")
+            self.log_status(f"File: {os.path.basename(input_file)}")
+            self.log_status("-" * 50)
+
+            # Run decompression
+            success = compressor.decompress(input_file, output_file)
+
+            if success:
+                # The decompressor might change or append the extension automatically
+                actual_output = output_file
+                if not os.path.exists(actual_output):
+                    # Try with added original extension
+                    base, ext = os.path.splitext(output_file)
+                    for f in os.listdir(os.path.dirname(output_file) or '.'):
+                        if os.path.splitext(f)[0] == os.path.basename(base):
+                            actual_output = os.path.join(os.path.dirname(output_file), f)
+                            break
+
+                if os.path.exists(actual_output):
+                    decompressed_size = os.path.getsize(actual_output)
+                    self.log_status(f"✓ Decompression successful!")
+                    self.log_status(f"Output: {os.path.basename(actual_output)}")
+                    self.log_status(f"Size: {decompressed_size:,} bytes")
+                    self.log_status(f"Location: {actual_output}")
+                    self.log_status("=" * 50)
+                    messagebox.showinfo(
+                        "Success",
+                        f"File decompressed successfully!\n\nSaved as:\n"
+                        f"{os.path.basename(actual_output)}\n\nLocation:\n{actual_output}"
+                    )
+                else:
+                    self.log_status(f"✓ Decompression completed!")
+                    self.log_status("=" * 50)
+                    messagebox.showinfo("Success", "File decompressed successfully!")
+            else:
+                self.log_status("✗ Decompression failed!")
+        except Exception as e:
+            self.log_status(f"✗ Error during decompression: {str(e)}")
+            messagebox.showerror("Error", f"Decompression failed:\n{str(e)}")
+
+
+def decompress_file(self):
+        input_file = self.decompress_input_entry.get()
+        output_file = self.decompress_output_entry.get()
+
+        if not input_file or not output_file:
+            messagebox.showerror("Error", "Please select both input and output files")
+            return
+
+        if not os.path.exists(input_file):
+            messagebox.showerror("Error", "Input file does not exist")
+            return
+        try:
+            # ✅ Always use a fresh compressor instance
+            compressor = HuffmanCompressor()
+
+            self.log_status(f"Starting decompression...")
+            self.log_status(f"File: {os.path.basename(input_file)}")
+            self.log_status("-" * 50)
+
+            # Run decompression
+            success = compressor.decompress(input_file, output_file)
+
+            if success:
+                # The decompressor might change or append the extension automatically
+                actual_output = output_file
+                if not os.path.exists(actual_output):
+                    # Try with added original extension
+                    base, ext = os.path.splitext(output_file)
+                    for f in os.listdir(os.path.dirname(output_file) or '.'):
+                        if os.path.splitext(f)[0] == os.path.basename(base):
+                            actual_output = os.path.join(os.path.dirname(output_file), f)
+                            break
+
+                if os.path.exists(actual_output):
+                    decompressed_size = os.path.getsize(actual_output)
+                    self.log_status(f"✓ Decompression successful!")
+                    self.log_status(f"Output: {os.path.basename(actual_output)}")
+                    self.log_status(f"Size: {decompressed_size:,} bytes")
+                    self.log_status(f"Location: {actual_output}")
+                    self.log_status("=" * 50)
+                    messagebox.showinfo(
+                        "Success",
+                        f"File decompressed successfully!\n\nSaved as:\n"
+                        f"{os.path.basename(actual_output)}\n\nLocation:\n{actual_output}"
+                    )
+                else:
+                    self.log_status(f"✓ Decompression completed!")
+                    self.log_status("=" * 50)
+                    messagebox.showinfo("Success", "File decompressed successfully!")
+            else:
+                self.log_status("✗ Decompression failed!")
+        except Exception as e:
+            self.log_status(f"✗ Error during decompression: {str(e)}")
+            messagebox.showerror("Error", f"Decompression failed:\n{str(e)}")
+
+
+# Main application
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = HuffmanGUI(root)
+    root.mainloop()
+
