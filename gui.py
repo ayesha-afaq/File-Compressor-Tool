@@ -111,3 +111,36 @@ class HuffmanGUI:
         if filename:
             self.compress_output_entry.delete(0, tk.END)
             self.compress_output_entry.insert(0, filename)
+    
+    def browse_decompress_input(self):
+        filename = filedialog.askopenfilename(
+            title="Select file to decompress",
+            filetypes=[("Huffman compressed", "*.huf"), ("Binary files", "*.bin"), ("All files", "*.*")]
+        )
+        if filename:
+            self.decompress_input_entry.delete(0, tk.END)
+            self.decompress_input_entry.insert(0, filename)
+            
+            # Suggest output filename
+            base_name = os.path.splitext(filename)[0]
+            if base_name.endswith("_compressed"):
+                base_name = base_name[:-11]
+            output_name = base_name + "_decompressed"
+            self.decompress_output_entry.delete(0, tk.END)
+            self.decompress_output_entry.insert(0, output_name)
+    
+    def browse_decompress_output(self):
+        filename = filedialog.asksaveasfilename(
+            title="Save decompressed file as",
+            filetypes=[
+                ("Text files", "*.txt"),
+                ("CSV files", "*.csv"),
+                ("JSON files", "*.json"),
+                ("Word documents", "*.docx"),
+                ("Excel files", "*.xlsx"),
+                ("All files", "*.*")
+            ]
+        )
+        if filename:
+            self.decompress_output_entry.delete(0, tk.END)
+            self.decompress_output_entry.insert(0, filename)
