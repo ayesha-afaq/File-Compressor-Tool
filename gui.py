@@ -207,7 +207,7 @@ class HuffmanGUI:
             self.log_status(f"✗ Error during compression: {str(e)}")
             messagebox.showerror("Error", f"Compression failed: {str(e)}")
 
-   def decompress_file(self):
+    def decompress_file(self):
         input_file = self.decompress_input_entry.get()
         output_file = self.decompress_output_entry.get()
 
